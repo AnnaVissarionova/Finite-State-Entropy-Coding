@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\user\\Desktop\\яп\\Finite State Entropy Coding\\Finite State Entropy Coding\\Finite State Entropy Coding.csproj",
+      "projectUniqueName": "C:\\Users\\user\\Desktop\\Finite State Entropy Coding\\Finite State Entropy Coding\\Finite State Entropy Coding.csproj",
       "projectName": "Finite State Entropy Coding",
-      "projectPath": "C:\\Users\\user\\Desktop\\яп\\Finite State Entropy Coding\\Finite State Entropy Coding\\Finite State Entropy Coding.csproj",
+      "projectPath": "C:\\Users\\user\\Desktop\\Finite State Entropy Coding\\Finite State Entropy Coding\\Finite State Entropy Coding.csproj",
       "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\user\\Desktop\\яп\\Finite State Entropy Coding\\Finite State Entropy Coding\\obj\\",
+      "outputPath": "C:\\Users\\user\\Desktop\\Finite State Entropy Coding\\Finite State Entropy Coding\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",

@@ -1,0 +1,15 @@
+C:\Users\user\Desktop\Finite State Entropy Coding\Finite State Entropy Coding\obj\Debug\net6.0\Finite State Entropy Coding.csproj.AssemblyReference.cache
+C:\Users\user\Desktop\Finite State Entropy Coding\Finite State Entropy Coding\obj\Debug\net6.0\Finite State Entropy Coding.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\user\Desktop\Finite State Entropy Coding\Finite State Entropy Coding\obj\Debug\net6.0\Finite State Entropy Coding.AssemblyInfoInputs.cache
+C:\Users\user\Desktop\Finite State Entropy Coding\Finite State Entropy Coding\obj\Debug\net6.0\Finite State Entropy Coding.AssemblyInfo.cs
+C:\Users\user\Desktop\Finite State Entropy Coding\Finite State Entropy Coding\obj\Debug\net6.0\Finite State Entropy Coding.csproj.CoreCompileInputs.cache
+C:\Users\user\Desktop\Finite State Entropy Coding\Finite State Entropy Coding\bin\Debug\net6.0\Finite State Entropy Coding.exe
+C:\Users\user\Desktop\Finite State Entropy Coding\Finite State Entropy Coding\bin\Debug\net6.0\Finite State Entropy Coding.deps.json
+C:\Users\user\Desktop\Finite State Entropy Coding\Finite State Entropy Coding\bin\Debug\net6.0\Finite State Entropy Coding.runtimeconfig.json
+C:\Users\user\Desktop\Finite State Entropy Coding\Finite State Entropy Coding\bin\Debug\net6.0\Finite State Entropy Coding.dll
+C:\Users\user\Desktop\Finite State Entropy Coding\Finite State Entropy Coding\bin\Debug\net6.0\Finite State Entropy Coding.pdb
+C:\Users\user\Desktop\Finite State Entropy Coding\Finite State Entropy Coding\obj\Debug\net6.0\Finite State Entropy Coding.dll
+C:\Users\user\Desktop\Finite State Entropy Coding\Finite State Entropy Coding\obj\Debug\net6.0\refint\Finite State Entropy Coding.dll
+C:\Users\user\Desktop\Finite State Entropy Coding\Finite State Entropy Coding\obj\Debug\net6.0\Finite State Entropy Coding.pdb
+C:\Users\user\Desktop\Finite State Entropy Coding\Finite State Entropy Coding\obj\Debug\net6.0\Finite State Entropy Coding.genruntimeconfig.cache
+C:\Users\user\Desktop\Finite State Entropy Coding\Finite State Entropy Coding\obj\Debug\net6.0\ref\Finite State Entropy Coding.dll

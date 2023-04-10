@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Finite State Entropy Coding": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
