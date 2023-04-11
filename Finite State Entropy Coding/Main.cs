@@ -9,6 +9,7 @@ namespace Finite_State_Entropy_Coding
     internal class main
     {
 
+        //Dictionary<char, int[]> dict3 = DefineAmountOfPos(new char[] { 'A', 'B', 'C', 'D', 'E' }, new int[] { 6, 1, 3, 4, 2 });
         static void Main(string[] args)
         {
             
@@ -27,7 +28,7 @@ namespace Finite_State_Entropy_Coding
                 }
                 Console.WriteLine();
             }*/
-           // var dict1 = DefineCondForSymb(new char[] { 'A', 'B', 'C', 'D', 'E' }, new int[] { 6, 1, 3, 4, 2 });
+            var dict1 = DefineCondForSymb(new char[] { 'A', 'B', 'C', 'D', 'E' }, new int[] { 6, 1, 3, 4, 2 });
            /* foreach(var t in dict1)
             {
                 Console.Write(t.Key + " ");
@@ -44,6 +45,16 @@ namespace Finite_State_Entropy_Coding
                 Console.Write($"{a} ");
             }
             Console.WriteLine();*/
+
+            var dict3 = DefineAmountOfPos(new char[] { 'A', 'B', 'C', 'D', 'E' }, new int[] { 6, 1, 3, 4, 2 });
+           /* foreach (var a in dict3)
+            {
+                foreach(var p in a.Value)
+                {
+                    Console.Write($"{p} ");
+                }
+            }
+            Console.WriteLine();*/
            /* var ind = 8;
             Console.WriteLine(dict2.GetValueOrDefault('C')[ind-1]);*/
 
@@ -56,19 +67,78 @@ namespace Finite_State_Entropy_Coding
             var s = "ww";
             //Console.WriteLine(s[2..].Equals(""));
 
-            Console.WriteLine(CodeString(4, "ABEDA", dict2, dict));
+            // Console.WriteLine(CodeString(4, "ABEDA", dict2, dict));
+            Console.WriteLine(DecodeString(6, "100011101001", 'A', dict2, dict, dict1, dict3));
+            
         }
 
 
         static string CodeString(int q, string s, Dictionary<char, string[]> encoding, Dictionary<char, int[]> q_table)
         {
+
             if (s.Equals(""))
             {
                 return $"end:{q}";
             }
-            
-            return encoding.GetValueOrDefault(s[0])[q - 1] + CodeString(q_table.GetValueOrDefault(s[0])[q-1], s[1..] ?? "", encoding, q_table);
+
+            return encoding.GetValueOrDefault(s[0])[q - 1] + CodeString(q_table.GetValueOrDefault(s[0])[q - 1], s[1..] ?? "", encoding, q_table);
         }
+
+
+        static Dictionary<char, int[]> DefineAmountOfPos(char[] symbls, int[] prob)
+        {
+            var dict = new Dictionary<char, int[]>();
+            var total = prob.Sum();
+            for (var i = 0; i < symbls.Length; i++)
+            {
+                var counts = GenerateAmountsOfPos(total, prob[i]);
+                dict.Add(symbls[i], counts);
+            }
+            return dict;
+        }
+
+        //поиск индекса предыдущего состояния
+        static int FindIndex(char c, string s, int q, Dictionary<char, string[]> encoding, Dictionary<char, int[]> q_table, Dictionary<char, int[]> dict3, int startNum)
+        {
+            var codes = encoding.GetValueOrDefault(c);
+            var ind = dict3.GetValueOrDefault(c)[0..(q - startNum)].Sum();
+            codes = codes[ind..];
+            for (var i = 0; i < q_table.GetValueOrDefault(c)[^1]; i++)
+            {
+                if (s.EndsWith(codes[i]))
+                {
+                    return i + ind;
+                }
+            }
+            return -1;
+        }
+
+        //поиск предыдущего символа по выходному состоянию
+        static char FindChar(int n, Dictionary<char, int[]> dict)
+        {
+            foreach(var e in dict)
+            {
+                if (e.Value.Contains(n))
+                {
+                    return e.Key;
+                }
+            }
+            return '(';
+        }
+
+        static string DecodeString(int q, string text, char lastChar, Dictionary<char, string[]> encoding, Dictionary<char, int[]> q_table, Dictionary<char, int[]> q_arr, Dictionary<char, int[]> dict3)
+        {
+            if (text.Equals(""))
+            {
+                return $"";
+            }
+            var ind = FindIndex(lastChar, text, q, encoding, q_table, dict3, q_arr.GetValueOrDefault(lastChar)[0]);
+            var prevCond = ind + 1;
+            text = text[..^(encoding.GetValueOrDefault(lastChar)[ind]).Length];
+           
+            return DecodeString(prevCond, text, FindChar(prevCond, q_arr), encoding, q_table, q_arr, dict3) + lastChar;
+        }
+
 
         //создает словарь "символ - массив из чисел", где каждое число - одно из состояний, соотв символу согласно частоте его появления
         static Dictionary<char, int[]> DefineCondForSymb(char[] arr, int[] prob)
