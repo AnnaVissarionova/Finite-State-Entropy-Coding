@@ -13,6 +13,10 @@ namespace Finite_State_Entropy_Coding
         static void Main(string[] args)
         {
             
+            /*var s = "1001000010110";
+            Console.WriteLine(s);
+            Compression.Compress(s, 0, 'a');
+            Console.WriteLine("res " + Compression.Decompress());*/
 
             /*   var arr = GenerateArr(16, 1);
                 foreach(var i in arr)
@@ -47,16 +51,16 @@ namespace Finite_State_Entropy_Coding
             Console.WriteLine();*/
 
             var dict3 = DefineAmountOfPos(new char[] { 'A', 'B', 'C', 'D', 'E' }, new int[] { 6, 1, 3, 4, 2 });
-           /* foreach (var a in dict3)
-            {
-                foreach(var p in a.Value)
-                {
-                    Console.Write($"{p} ");
-                }
-            }
-            Console.WriteLine();*/
-           /* var ind = 8;
-            Console.WriteLine(dict2.GetValueOrDefault('C')[ind-1]);*/
+            /* foreach (var a in dict3)
+             {
+                 foreach(var p in a.Value)
+                 {
+                     Console.Write($"{p} ");
+                 }
+             }
+             Console.WriteLine();*/
+            /* var ind = 8;
+             Console.WriteLine(dict2.GetValueOrDefault('C')[ind-1]);*/
 
             /*  var arr = CreateCoding(8);
               foreach(var s in arr)
@@ -64,11 +68,19 @@ namespace Finite_State_Entropy_Coding
                   Console.WriteLine(s);
               }*/
 
-            var s = "ww";
-            //Console.WriteLine(s[2..].Equals(""));
+            var text = Compression.ReadTextFile("tt.txt");
+            var codedText = CodeString(4, text, dict2, dict);
+            Console.WriteLine(text);
+            Compression.Compress(codedText, 8, 'C');
+            var tt = Compression.Decompress();
+            (int q, char lc, int extra) = Compression.GetComprInfo();
+            tt = tt[0..^extra];
+            var decoded = DecodeString(q, tt, lc, dict2, dict, dict1, dict3);
+            Console.WriteLine(decoded);
+            Console.WriteLine(text.Equals(decoded));
 
             // Console.WriteLine(CodeString(4, "ABEDA", dict2, dict));
-            Console.WriteLine(DecodeString(6, "100011101001", 'A', dict2, dict, dict1, dict3));
+           // Console.WriteLine(DecodeString(6, "100011101001", 'A', dict2, dict, dict1, dict3));
             
         }
 
@@ -78,7 +90,9 @@ namespace Finite_State_Entropy_Coding
 
             if (s.Equals(""))
             {
-                return $"end:{q}";
+                //return $"end:{q}";
+                Console.WriteLine($"llast cond {q}");
+                return $"";
             }
 
             return encoding.GetValueOrDefault(s[0])[q - 1] + CodeString(q_table.GetValueOrDefault(s[0])[q - 1], s[1..] ?? "", encoding, q_table);
