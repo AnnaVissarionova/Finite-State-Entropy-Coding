@@ -64,41 +64,41 @@ namespace Finite_State_Entropy_Coding
         {
             if (s.Equals(""))
             {
-                return "";
+                return $"end:{q}";
             }
             
             return encoding.GetValueOrDefault(s[0])[q - 1] + CodeString(q_table.GetValueOrDefault(s[0])[q-1], s[1..] ?? "", encoding, q_table);
         }
 
-
+        //создает словарь "символ - массив из чисел", где каждое число - одно из состояний, соотв символу согласно частоте его появления
         static Dictionary<char, int[]> DefineCondForSymb(char[] arr, int[] prob)
         {
             var dict = new Dictionary<char, int[]>();
             var ind = 0;
             for(var i = 0; i < arr.Length; i++)
             {
-                dict.Add(arr[i], GenereteArr(prob[i], ind));
+                dict.Add(arr[i], GenerateArrOfCond(prob[i], ind));
                 ind += prob[i];
             }
             return dict;
         }
 
         //создает словарь вида "символ - массив из чисел", где каждое число - выходное состояние, каждая позиция числа - входное состояние
-        static Dictionary<char, int[]> DefineInputCondForSymb(char[] arr, int[] prob)
+        static Dictionary<char, int[]> DefineInputCondForSymb(char[] symbls, int[] prob)
         {
             var dict = new Dictionary<char, int[]>();
-            var sum = prob.Sum();
+            var total = prob.Sum();
             var start_num = 1;
-            for (var i = 0; i < arr.Length; i++)
+            for (var i = 0; i < symbls.Length; i++)
             {
-                var counts = GenerateArr(sum, prob[i]);
+                var counts = GenerateAmountsOfPos(total, prob[i]);
                 /*Console.Write(arr[i]);
                 foreach(var e in counts)
                 {
                     Console.Write($"{e} ");
                 }
                 Console.WriteLine();*/
-                var nums_arr = new int[sum];
+                var nums_arr = new int[total];
                 var start_ind = 0;
                
                 for(var j = 0; j < prob[i]; j++)
@@ -110,22 +110,22 @@ namespace Finite_State_Entropy_Coding
                     }
                     start_ind += counts[j];
                 }
-                dict.Add(arr[i], nums_arr);
+                dict.Add(symbls[i], nums_arr);
                 start_num += prob[i];
             }
             return dict;
         }
 
         //создает кодировку - словарь вида "символ - массив из строк", где каждая строка - двоичный код символа (который зависит от входного состояния), каждая позиция числа - входное состояние
-        static Dictionary<char, string[]> DefineCondCoding(char[] arr, int[] prob, int total)
+        static Dictionary<char, string[]> DefineCondCoding(char[] symbls, int[] prob, int total)
         {
             var res = new Dictionary<char, string[]>();
-            for (var i = 0; i < arr.Length; i++)
+            for (var i = 0; i < symbls.Length; i++)
             {
                // Console.Write(arr[i] + ": ");
                 //Console.WriteLine($"{e.Value.Length}");
                 var coding = new string[0];
-                var totals = GenerateArr(total, prob[i]);
+                var totals = GenerateAmountsOfPos(total, prob[i]);
 
                 for (var j = 0; j < prob[i]; j++)
                 {
@@ -136,7 +136,7 @@ namespace Finite_State_Entropy_Coding
                     }
                 }
 
-                res.Add(arr[i], coding);
+                res.Add(symbls[i], coding);
             }
             /*foreach(var e in arr)
             {
@@ -157,18 +157,6 @@ namespace Finite_State_Entropy_Coding
             return res;
         }
 
-
-       /* static string CreateCoding(int total, int pos)
-        {
-            var s = pos > 0 ? "" : "0";
-            var n = pos - 1;
-            while (n > 0)
-            {
-                s = s + (n % 2);
-                n /= 2;
-            }
-            return s;
-        }*/
 
         static string[] CreateCoding(int total)
         {
@@ -192,23 +180,27 @@ namespace Finite_State_Entropy_Coding
             return res;
         }
 
-
-        static int[] GenerateArr(int total, int count)
+        //Создает массив из чисел, каждое число - количество позиций в таблице состояний, которое занимает одно состояние из всех
+        //пример : символ А встречается с вероятностью 6 из 16, для 'A' определено 6 состояний от 1 до 6
+        //состояние 1 в таблице состояний занимает 2 позиции, то же самое для состояний 2, 3 и 4
+        //а состояния 5 и 6 занимают по 4 позиции ( итого 6 состояний занимают все 16 возможных позиций)
+        //массив [2, 2, 2, 2, 4, 4] и будет результатом функции
+        static int[] GenerateAmountsOfPos(int total, int count)
         {
 
             var res = new int[count];
-            if (count == total)
+            if (count == total)   //вариант, когда состояний столько же, сколько и позиций в таблице состояний
             {
                 for(var i = 0; i < count; i++)
                 {
                     res[i] = 1;
                 }
             }
-            else if (count > total / 2)
+            else if (count > total / 2)  //вариант, когда состояний больше половины позиций в таблице состояний
             {
-                res = GenerateArr(total / 2, total / 2).Concat(GenerateArr(total / 2, count - total / 2)).ToArray();
+                res = GenerateAmountsOfPos(total / 2, total / 2).Concat(GenerateAmountsOfPos(total / 2, count - total / 2)).ToArray();
             }
-            else if ((total % count == 0) && (IsPowOfTwo(total / count)))
+            else if ((total % count == 0) && (IsPowOfTwo(total / count))) //вариант, когда количество позиций под каждое состояние можно поделить поровну
             {
                 var amount = total / count;
                 for (var i = 0; i < count; i++)
@@ -245,7 +237,8 @@ namespace Finite_State_Entropy_Coding
         {
             return (Math.Round(Math.Ceiling(Math.Log2(n))) == Math.Round(Math.Floor(Math.Log2(n))));
         }
-        static int[] GenereteArr(int n, int start)
+
+        static int[] GenerateArrOfCond(int n, int start)
         {
             var res = new int[0];
             for(var i = start+1; i < n+start+1; i++)
