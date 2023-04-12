@@ -23,49 +23,36 @@ namespace Finite_State_Entropy_Coding
             return "error";
         }
 
-        public static void Compress(string bits, int q, char lastChar)
+        public static void Compress(string bits, int q)
         {
             var len = bits.Length;
-            //Console.WriteLine(bits);
             var extra = len % 8 == 0 ? 0 : 8 - len % 8;
-            //Console.WriteLine(extra);
 
             try
             {
-                using (BinaryWriter writer = new BinaryWriter(new FileStream("tt.dat", FileMode.Create), Encoding.ASCII))
+                using (BinaryWriter writer = new BinaryWriter(new FileStream("compressed.dat", FileMode.Create), Encoding.ASCII))
                 using (BinaryWriter writer2 = new BinaryWriter(new FileStream("info.dat", FileMode.Create), Encoding.ASCII))
                 {
                     for (var i = 0; i < len / 8; i++)
                     {
-                        //Console.WriteLine(bits.Substring(8 * i, 8));
                         byte arr = Convert.ToByte(bits.Substring(8 * i, 8), 2);
-                        //Console.WriteLine($"{arr} byte");
 
                         writer.Write(arr);
                     }
                     if(extra > 0)
                     {
-                       // Console.WriteLine($"subs = {8 * (len / 8)}");
                         var s = bits.Substring(8 * (len / 8));
-                        //Console.WriteLine($"s = {s}");
 
                         for (var i = 0; i < extra; i++)
                         {
                             s = s + "0";
                         }
-                        //Console.WriteLine(extra);
-                        //Console.WriteLine($"s = {s}");
                         writer.Write(Convert.ToByte(s, 2));
                     }
-                   /* else
-                    {
-                        var s = bits.Substring(8 * (len / 8) - 8);
-                        writer.Write(Convert.ToByte(s, 2));
-                    }*/
 
-                    Console.WriteLine("gfff");
+                  
                     writer2.Write(q);
-                    writer2.Write(lastChar);
+                   // writer2.Write(lastChar);
                     writer2.Write(extra);
                     
 
@@ -83,23 +70,17 @@ namespace Finite_State_Entropy_Coding
             var s = "";
             try
             {
-                using (BinaryReader reader = new BinaryReader(new FileStream("tt.dat", FileMode.Open), Encoding.ASCII))
+                using (BinaryReader reader = new BinaryReader(new FileStream("compressed.dat", FileMode.Open), Encoding.ASCII))
                 {
                     while (reader.PeekChar() != -1)
                     {
                         var b = reader.ReadByte();
-                        //Console.WriteLine(Convert.ToString(b, 2));
                         var ss = Convert.ToString(b, 2);
-                        //Console.WriteLine(ss.Length);
                         var len = ss.Length;
                         for(var i = 0; i < (8 - len); i++)
                         {
                             ss = "0" + ss;
-                            Console.WriteLine(ss);
-
                         }
-                        //Console.WriteLine("res : " + ss);
-                       // Console.WriteLine();
                         s = s + ss;
                     }
                 }
@@ -112,7 +93,8 @@ namespace Finite_State_Entropy_Coding
             return s;
         }
 
-        public static (int, char, int) GetComprInfo()
+        //public static (int, char, int) GetComprInfo()
+        public static (int, int) GetComprInfo()
         {
             (int q, char lastChar, int extra) = (-1, '(', -1);
             try
@@ -122,22 +104,18 @@ namespace Finite_State_Entropy_Coding
                 {
                     fs.Seek(0, SeekOrigin.Begin);
                     q = reader.ReadInt32();
-                    //Console.WriteLine(q);
-                    lastChar = reader.ReadChar();
-                    //Console.WriteLine(lastChar);
+                   // lastChar = reader.ReadChar();
                     extra = reader.ReadInt32();
-                    //Console.WriteLine(extra);
-
-
-
                 }
-                return (q, lastChar, extra);
+                //return (q, lastChar, extra);
+                return (q, extra);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
-            return(q, lastChar, extra);
+            // return(q, lastChar, extra);
+            return (q, extra);
         }
 
     }
