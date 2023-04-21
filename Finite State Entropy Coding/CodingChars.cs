@@ -9,7 +9,8 @@ namespace Finite_State_Entropy_Coding
     public class CodingChars
     {
 
-        public int[] condArr { get; set; } = new int[1];
+
+        public int f_cond { get; set; } = -1;
        // public char lastChar;
         char[] alph;
         Dictionary<char, int[]> q_table;
@@ -20,55 +21,42 @@ namespace Finite_State_Entropy_Coding
 
         public CodingChars(int q, char[] symbls, int[] prob)
         {
-            condArr = new int[1] { q };
+            f_cond = q;
             alph = symbls;
-           // lastChar = lastc;
-            q_table = DefineInputOutputConditionsForSymb(symbls, prob);
-            encoding = DefineConditionsEncoding(symbls, prob);
-            q_arr = DefineArrOfConditionsForSymb(symbls, prob);
-            q_amounts = DefineAmountOfConditionsForSymb(symbls, prob);
+            q_table = DefineInputOutputConditionsForSymb(symbls, prob);  //таблица входных-выходных состояний для каждого символа
+            encoding = DefineConditionsEncoding(symbls, prob);           //таблица кодировок состояний для каждого символа
+            q_arr = DefineArrOfConditionsForSymb(symbls, prob);          //словарь вариаций состояний для каждого символа  
+            q_amounts = DefineAmountOfConditionsForSymb(symbls, prob);   //словарь количества состояний для каждого символа 
 
         }
 
-
-        public string CodeString(int q, string s)
+        public int GetFirstCond(char f_char)
         {
-           // if (s.Length > 0) { lastChar = s[^1]; }
-            if (s.Equals(""))
+            var res = 0;
+            foreach(var i in q_arr)
             {
-                condArr = condArr.Append(q).ToArray();
-                return $"";
+                if (i.Key == f_char)
+                {
+                    res = i.Value[0];
+                }
             }
-            return encoding.GetValueOrDefault(s[0])[q - 1] + CodeString(q_table.GetValueOrDefault(s[0])[q - 1], s[1..] ?? "");
+            return res;
         }
 
+       
         public string CodeStringCycle(int q, string s)
         {
             var res = "";
             while (s.Length > 0)
             {
                 res += encoding.GetValueOrDefault(s[0])[q - 1];
-                //lastChar = s[0];
                 q = q_table.GetValueOrDefault(s[0])[q - 1];
-                condArr[0] = q;
+                f_cond = q;
                 s = s[1..] ?? "";
             }
             return res;
         }
 
-
-        public string DecodeString(int q, string text, char last)
-        {
-            if (text.Equals(""))
-            {
-                return $"";
-            }
-            var ind = FindIndex(last, text, q, q_arr.GetValueOrDefault(last)[0]);
-            var prevCond = ind + 1;
-            text = text[..^(encoding.GetValueOrDefault(last)[ind]).Length];
-
-            return DecodeString(prevCond, text, FindChar(prevCond)) + last;
-        }
 
         public string DecodeStringCycle(int q, string s)
         {
@@ -143,7 +131,8 @@ namespace Finite_State_Entropy_Coding
             return dict;
         }
 
-        //создает кодировку - словарь вида "символ - массив из строк", где каждая строка - двоичный код символа (который зависит от входного состояния), каждая позиция числа - входное состояние
+        //создает кодировку - словарь вида "символ - массив из строк", где каждая строка - двоичный код символа
+        //(который зависит от входного состояния), каждая позиция числа - входное состояние
         public static Dictionary<char, string[]> DefineConditionsEncoding(char[] symbls, int[] prob)
         {
             var res = new Dictionary<char, string[]>();
@@ -152,12 +141,6 @@ namespace Finite_State_Entropy_Coding
             {
                 var coding = new string[0];
                 var totals = GenerateAmountsOfOneNumConditions(total, prob[i]);
-                /*Console.Write($"{symbls[i]} ");
-                foreach(var t in totals)
-                {
-                    Console.Write($"{t},");
-                }
-                Console.WriteLine();*/
 
                 for (var j = 0; j < prob[i]; j++)
                 {
@@ -174,6 +157,9 @@ namespace Finite_State_Entropy_Coding
         }
 
         //создает словарь вида "символ - массив чисел", где каждое число - количество вариаций одного состояния
+        //пример: символ А встречается с вероятностью 6 из 8, символ B встречается с вероятностью 2 из 8,
+        //для 'A' определено 6 состояний от 1 до 6, для 'B' определено 2 состояний от 7 до 8
+        //результатом функции будет словарь из двух пар : ('A', [1,1,1,1,2,2]) и ('B', [4,4])
         static Dictionary<char, int[]> DefineAmountOfConditionsForSymb(char[] symbls, int[] prob)
         {
             var dict = new Dictionary<char, int[]>();
@@ -205,6 +191,10 @@ namespace Finite_State_Entropy_Coding
         //Создает кодировку всех вариаций (total) одного состояния
         static string[] CreateCoding(int total)
         {
+            if (total == 1)
+            {
+                return new string[] { "1" };
+            }
             var res = new string[total];
             for (var i = 0; i < total; i++)
             {
@@ -295,6 +285,13 @@ namespace Finite_State_Entropy_Coding
 
 
 
+
+
+
+
+
+
+        // методы для печати информации о кодировании
 
         public void PrintCodingDict()
         {
@@ -392,56 +389,6 @@ namespace Finite_State_Entropy_Coding
             }
         }
 
-
-
-
-
-        /* public string[] CodeText(string s)
-         {
-             var ss = new string[0];
-             var res = new string[0];
-
-             for (var i = 0; i < s.Length / 8; i++)
-             {
-                 ss = ss.Append(s.Substring(i*8, 8)).ToArray();
-             }
-             ss = ss.Append(s.Substring((s.Length / 8) * 8)).ToArray();
-
-            for(var i = 0; i < ss.Length; i++)
-             {
-                 res = res.Append(CodeString(condArr[i], ss[i], dict2, dict)).ToArray();
-             }
-
-             return res;
-         }*/
-
-
-        /*public string DecodeText(string s, char lastChar)
-        {
-            Console.WriteLine($"startes decoding");
-            var res = DecodeString(condArr[^1], s, lastChar, dict2, dict, dict1, dict3);
-
-            *//* var ss = new string[0];
-             var res = new string[0];
-             Console.WriteLine(s.Length);
-
-             for (var i = 0; i < s.Length / 64; i++)
-             {
-                 ss = ss.Append(s.Substring(i * 64, 64)).ToArray();
-                 Console.WriteLine($"ss = {ss}");
-             }
-             ss = ss.Append(s.Substring((s.Length / 64) * 64)).ToArray();
-
-             for (var i = 0; i < ss.Length - 1; i++)
-             {
-                 var decoded = DecodeString(condArr[^i], ss[^(i + 1)].Last() + ss[^i], lastChar, dict2, dict, dict1, dict3);
-                 res = res.Append(decoded[1..]).ToArray();
-                 lastChar = decoded[0];
-             }
-             res = res.Append(DecodeString(condArr[1], ss[0], lastChar, dict2, dict, dict1, dict3)).ToArray();*//*
-
-            return res;
-        }*/
     }
 
 }

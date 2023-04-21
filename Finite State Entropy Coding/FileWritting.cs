@@ -23,15 +23,15 @@ namespace Finite_State_Entropy_Coding
             return "error";
         }
 
-        public static void Compress(string bits, int q)
+        public static void Compress(string bits, int q, string outpath_name)
         {
             var len = bits.Length;
             var extra = len % 8 == 0 ? 0 : 8 - len % 8;
 
             try
             {
-                using (BinaryWriter writer = new BinaryWriter(new FileStream("compressed.dat", FileMode.Create), Encoding.ASCII))
-                using (BinaryWriter writer2 = new BinaryWriter(new FileStream("info.dat", FileMode.Create), Encoding.ASCII))
+                using (BinaryWriter writer = new BinaryWriter(new FileStream(outpath_name + ".dat", FileMode.Create), Encoding.ASCII))
+                using (BinaryWriter writer2 = new BinaryWriter(new FileStream(outpath_name + "_info.dat", FileMode.Create), Encoding.ASCII))
                 {
                     for (var i = 0; i < len / 8; i++)
                     {
@@ -52,7 +52,6 @@ namespace Finite_State_Entropy_Coding
 
                   
                     writer2.Write(q);
-                   // writer2.Write(lastChar);
                     writer2.Write(extra);
                     
 
@@ -65,12 +64,12 @@ namespace Finite_State_Entropy_Coding
             }
         }
 
-        public static string Decompress()
+        public static string Decompress(string outpath_name)
         {
             var s = "";
             try
             {
-                using (BinaryReader reader = new BinaryReader(new FileStream("compressed.dat", FileMode.Open), Encoding.ASCII))
+                using (BinaryReader reader = new BinaryReader(new FileStream(outpath_name + ".dat", FileMode.Open), Encoding.ASCII))
                 {
                     while (reader.PeekChar() != -1)
                     {
@@ -93,13 +92,12 @@ namespace Finite_State_Entropy_Coding
             return s;
         }
 
-        //public static (int, char, int) GetComprInfo()
-        public static (int, int) GetComprInfo()
+        public static (int, int) GetComprInfo(string outpath_name)
         {
             (int q, char lastChar, int extra) = (-1, '(', -1);
             try
             {
-                var fs = new FileStream("info.dat", FileMode.Open);
+                var fs = new FileStream(outpath_name + "_info.dat", FileMode.Open);
                 using (BinaryReader reader = new BinaryReader(fs, Encoding.ASCII))
                 {
                     fs.Seek(0, SeekOrigin.Begin);

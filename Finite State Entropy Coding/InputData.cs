@@ -21,10 +21,11 @@ namespace Finite_State_Entropy_Coding
             inp_ss[2] = Console.ReadLine();
 
             (char[] charArr, int[] prob, string text) = InputData.ParseData(inp_ss);
-            var codingObj = new CodingChars(1, charArr, prob);
-            var coded = codingObj.CodeStringCycle(codingObj.condArr[0], text);
+            var codingObj = new CodingChars(0, charArr, prob);
+            codingObj.f_cond = codingObj.GetFirstCond(text[0]);
+            var coded = codingObj.CodeStringCycle(codingObj.f_cond, text);
 
-            Console.WriteLine($"---> Конечное состояние : {codingObj.condArr[0]}");
+            Console.WriteLine($"---> Конечное состояние : {codingObj.f_cond}");
             Console.WriteLine($"---> Сжатая строка : {coded}");
             Console.WriteLine();
 
