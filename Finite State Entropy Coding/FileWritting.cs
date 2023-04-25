@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Finite_State_Entropy_Coding
 {
-    public class Compression
+    public class FileWritting
     {
 
         public static string ReadTextFile(string path)
@@ -102,17 +102,14 @@ namespace Finite_State_Entropy_Coding
                 {
                     fs.Seek(0, SeekOrigin.Begin);
                     q = reader.ReadInt32();
-                   // lastChar = reader.ReadChar();
                     extra = reader.ReadInt32();
                 }
-                //return (q, lastChar, extra);
                 return (q, extra);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
-            // return(q, lastChar, extra);
             return (q, extra);
         }
 

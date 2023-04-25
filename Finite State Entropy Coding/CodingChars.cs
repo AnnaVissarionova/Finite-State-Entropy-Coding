@@ -260,6 +260,7 @@ namespace Finite_State_Entropy_Coding
                         {
                             res[j] += last / (count - i);
                         }
+                        break;
                     }
                     i--;
                 }

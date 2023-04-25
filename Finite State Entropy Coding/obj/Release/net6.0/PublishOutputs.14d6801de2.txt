@@ -1,0 +1,5 @@
+C:\Users\user\Desktop\Finite State Entropy Coding\Finite State Entropy Coding\bin\Release\net6.0\app.publish\Finite State Entropy Coding.exe
+C:\Users\user\Desktop\Finite State Entropy Coding\Finite State Entropy Coding\bin\Release\net6.0\app.publish\Finite State Entropy Coding.dll
+C:\Users\user\Desktop\Finite State Entropy Coding\Finite State Entropy Coding\bin\Release\net6.0\app.publish\Finite State Entropy Coding.deps.json
+C:\Users\user\Desktop\Finite State Entropy Coding\Finite State Entropy Coding\bin\Release\net6.0\app.publish\Finite State Entropy Coding.runtimeconfig.json
+C:\Users\user\Desktop\Finite State Entropy Coding\Finite State Entropy Coding\bin\Release\net6.0\app.publish\Finite State Entropy Coding.pdb

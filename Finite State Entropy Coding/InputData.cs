@@ -96,7 +96,7 @@ namespace Finite_State_Entropy_Coding
         {
             var charArr = new char[int.Parse(ss[0])];
             var prob = new int[charArr.Length];
-            var groups = ss[1].Split(' ');
+            var groups = ss[1].Split(' ', StringSplitOptions.RemoveEmptyEntries);
            for(var i = 0; i < charArr.Length; i++)
             {
                 charArr[i] = groups[i][0];
